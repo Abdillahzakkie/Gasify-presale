@@ -3,6 +3,7 @@ const ethValue = document.querySelector(".eth-value");
 const formInput = document.querySelector('form input');
 const d4ppBuy = document.querySelector('.d4pp-token-buy');
 const presalePriceInput = document.querySelector('.presale-price-per-eth');
+const referralIDinput = document.querySelector('.referral-id-selector')
 
 
 // Enter admin's wallet in the field below
@@ -13,6 +14,7 @@ const presalePrice = 1400;
 
 let web3;
 let user;
+let referralID = null;
 
 const toWei = _amount => web3.utils.toWei(_amount.toString(), 'ether');
 
@@ -34,6 +36,9 @@ const loadWeb3 = async () => {
         [user] = _accounts;
         presalePriceInput.textContent = `${presalePrice} GASIFY`;
 
+        let result = window.location.search.split('=');
+        console.log(result);
+        if(result.length > 0 && result[0] === "?referralID") referralID = result[1];
     } catch (error) {
         console.log(error.message);
         return error.message;
@@ -68,17 +73,22 @@ form.addEventListener('submit', async e => {
     e.preventDefault();
     try {
         const input = e.target.elements[0].value;
-        const _referralId = e.target.elements[1].value;
+
+
         if(isNaN(input)) return;
         const transactionObject = {
             from: user,
             to: adminWallet,
             value: toWei(input)
         }
+        const _referralID = referralID ? referralID : null;
         const _url = `https://gasify-nodejs-backend.herokuapp.com/api/v1/referrer/register`;
-        const _data = { user, _referralId };
+        const _data = { user, _referralID };
+
         const reciept = await web3.eth.sendTransaction(transactionObject);
         const _response = await postData(_url, _data);
+
+
         alert("Transaction successful");
         return { reciept, _response };
     } catch (error) {
