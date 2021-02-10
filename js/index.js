@@ -6,7 +6,7 @@ const presalePriceInput = document.querySelector('.presale-price-per-eth');
 
 
 // Enter admin's wallet in the field below
-const adminWallet = "";
+const adminWallet = "0xcecc44fee8f0d4d2e5b958abe176b3781cc8f2e5";
 
 const TokenAddress = "0xcecc44fee8f0d4d2e5b958abe176b3781cc8f2e5";
 const presalePrice = 1400;
@@ -40,31 +40,47 @@ const loadWeb3 = async () => {
     }       
 }
 
+const postData = async (url = '', data = {}) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    return response.json();
+}
+
 formInput.addEventListener('change', e => {
     e.preventDefault();
-    const input = e.currentTarget.value;
-    console.log(input)
-    if(isNaN(input)) return;
-
-    const calcD4PPToken = Number(input) * presalePrice;
-
-    ethValue.textContent = `${Number(input).toFixed(2)} ETH`;
-    d4ppBuy.textContent = `${calcD4PPToken.toFixed(2)} D4PP`;
-    
+    try {
+        const input = e.currentTarget.value;
+        if(isNaN(input)) return;
+        const calcD4PPToken = Number(input) * presalePrice;
+        ethValue.textContent = `${Number(input).toFixed(2)} ETH`;
+        d4ppBuy.textContent = `${calcD4PPToken.toFixed(2)} D4PP`; 
+    } catch (error) {
+        
+    } 
 })
 
 form.addEventListener('submit', async e => {
     e.preventDefault();
     try {
         const input = e.target.elements[0].value;
+        const _referralId = e.target.elements[1].value;
         if(isNaN(input)) return;
         const transactionObject = {
             from: user,
             to: adminWallet,
             value: toWei(input)
         }
-        await web3.eth.sendTransaction(transactionObject);
-        return alert("Transaction successful");
+        const _url = `https://gasify-nodejs-backend.herokuapp.com/api/v1/referrer/register`;
+        const _data = { user, _referralId };
+        const reciept = await web3.eth.sendTransaction(transactionObject);
+        const _response = await postData(_url, _data);
+        alert("Transaction successful");
+        return { reciept, _response };
     } catch (error) {
         alert("Error while trying to process transaction");
         return error.message;
