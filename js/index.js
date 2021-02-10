@@ -7,7 +7,7 @@ const referralIDinput = document.querySelector('.referral-id-selector')
 
 
 // Enter admin's wallet in the field below
-const adminWallet = "0xcecc44fee8f0d4d2e5b958abe176b3781cc8f2e5";
+const adminWallet = "";
 
 const TokenAddress = "0xcecc44fee8f0d4d2e5b958abe176b3781cc8f2e5";
 const presalePrice = 1400;
