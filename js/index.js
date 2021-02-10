@@ -39,6 +39,7 @@ const loadWeb3 = async () => {
         const result = window.location.search.split('=');
         if(result.length > 0) referralID = result[result.length - 1];
         console.log(referralID);
+        alert(`Your referral ID: ${referralID}`)
     } catch (error) {
         console.log(error.message);
         return error.message;
