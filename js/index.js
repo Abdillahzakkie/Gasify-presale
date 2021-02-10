@@ -37,7 +37,6 @@ const loadWeb3 = async () => {
         presalePriceInput.textContent = `${presalePrice} GASIFY`;
 
         let result = window.location.search.split('=');
-        console.log(result);
         if(result.length > 0 && result[0] === "?referralID") referralID = result[1];
     } catch (error) {
         console.log(error.message);
